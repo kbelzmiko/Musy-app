@@ -11,7 +11,7 @@
         </div>
         <hr class="text-neutral-600">
         <div class="flex flex-wrap justify-items-center p-2 rounded-2xl w-full overflow-y-scroll scroll-smooth">
-            <app-homeitem *ngFor="let song of mainScreenStatus.songs" [id]="song.id" path={{song.path}} title={{song.title}} artist={{song.artist}} album={{song.album}} year={{song.year}} duration={{song.duration}} coverPath={{song.coverPath}} [isStarred]="song.isStarred" [playlistId]="mainScreenStatus.pId"></app-homeitem>
+            <app-homeitem *ngFor="let song of mainScreenStatus.songs; trackBy: trackBySong" [id]="song.id" path={{song.path}} title={{song.title}} artist={{song.artist}} album={{song.album}} year={{song.year}} duration={{song.duration}} coverPath={{song.coverPath}} [isStarred]="song.isStarred" [playlistId]="mainScreenStatus.pId"></app-homeitem>
         </div>
     </div>
     <div class="flex flex-col gap-5 w-full" *ngIf="!mainScreenStatus.onHome()">
@@ -26,8 +26,8 @@
         </div>
         
         <hr class="text-neutral-600">
-        <div class="flex flex-col gap-2 bg-neutral-600/20 p-2 border-2 border-neutral-800 rounded-2xl w-full h-full overflow-y-scroll scroll-smooth">
-            <app-song *ngFor="let song of mainScreenStatus.songs" [id]="song.id" path={{song.path}} title={{song.title}} artist={{song.artist}} album={{song.album}} year={{song.year}} duration={{song.duration}} coverPath={{song.coverPath}} [isStarred]="song.isStarred" [playlistId]="mainScreenStatus.pId"></app-song>
-        </div>
+        <cdk-virtual-scroll-viewport itemSize="72" class="flex flex-col gap-2 bg-neutral-600/20 p-2 border-2 border-neutral-800 rounded-2xl w-full h-full">
+            <app-song *cdkVirtualFor="let song of mainScreenStatus.songs; trackBy: trackBySong" [id]="song.id" path={{song.path}} title={{song.title}} artist={{song.artist}} album={{song.album}} year={{song.year}} duration={{song.duration}} coverPath={{song.coverPath}} [isStarred]="song.isStarred" [playlistId]="mainScreenStatus.pId"></app-song>
+        </cdk-virtual-scroll-viewport>
     </div>
 </div>

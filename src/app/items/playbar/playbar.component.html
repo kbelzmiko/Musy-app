@@ -1,60 +1,55 @@
-<div class="grid grid-cols-3 bg-neutral-900 p-4 rounded-2xl w-full min-h-26">
-    <!--3 Divs, uno para la cancion, otro para el menu de control y otro para el volumen y extras-->
-    <div class="flex justify-self-start gap-4 w-full">
-        <div class="">
-            <img src="{{songManagement.songCover}}" alt="" class="rounded-xl max-w-24 max-h-24">
-        </div>
-        <div>
-            <div class="grid grid-cols-1 text-left">
-                <h1 class="w-sm 2xl:w-2xl text-3xl truncate">{{songManagement.songTitle}}</h1>
-                <p class="text-ac1/70 text-md">{{songManagement.songArtist}}</p>
+<div class="flex flex-col gap-1 bg-neutral-900 p-4 rounded-2xl w-full min-h-32">
+    <div class="relative flex flex-1 justify-center">
+        <div class="top-1/2 left-0 absolute flex gap-4 max-w-96 -translate-y-1/2">
+            <img src="{{songManagement.songCover}}" alt="" class="rounded-xl max-w-16 max-h-16">
+            <div class="min-w-0">
+                <div class="grid grid-cols-1 text-left">
+                    <div #titleWrap class="overflow-hidden whitespace-nowrap">
+                        <div *ngIf="overflows" class="marquee-inner">
+                            <span class="mr-4 text-xl">{{songManagement.songTitle}}</span>
+                            <span class="text-xl">{{songManagement.songTitle}}</span>
+                        </div>
+                        <span #titleStatic *ngIf="!overflows" class="block text-xl truncate">{{songManagement.songTitle}}</span>
+                    </div>
+                    <p class="text-ac1/70 text-md truncate">{{songManagement.songArtist}}</p>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="justify-self-center gap-8 grid grid-cols-1 grid-rows-2 w-full">
-        <div class="flex justify-center gap-4"> <!--Botones-->
-            <button (click)="toggleShuffle()"> <!--Shuffle-->
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" [ngClass]="{'fill-ac1':shuffle, 'fill-neutral-600':!shuffle}" class="hover:shadow-2xl hover:shadow-neutral-800 fill-neutral-600 hover:fill-ac1 size-5 hover:scale-110 duration-200 transform"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M403.8 34.4c12-5 25.7-2.2 34.9 6.9l64 64c6 6 9.4 14.1 9.4 22.6s-3.4 16.6-9.4 22.6l-64 64c-9.2 9.2-22.9 11.9-34.9 6.9s-19.8-16.6-19.8-29.6l0-32-32 0c-10.1 0-19.6 4.7-25.6 12.8L284 229.3 244 176l31.2-41.6C293.3 110.2 321.8 96 352 96l32 0 0-32c0-12.9 7.8-24.6 19.8-29.6zM164 282.7L204 336l-31.2 41.6C154.7 401.8 126.2 416 96 416l-64 0c-17.7 0-32-14.3-32-32s14.3-32 32-32l64 0c10.1 0 19.6-4.7 25.6-12.8L164 282.7zm274.6 188c-9.2 9.2-22.9 11.9-34.9 6.9s-19.8-16.6-19.8-29.6l0-32-32 0c-30.2 0-58.7-14.2-76.8-38.4L121.6 172.8c-6-8.1-15.5-12.8-25.6-12.8l-64 0c-17.7 0-32-14.3-32-32s14.3-32 32-32l64 0c30.2 0 58.7 14.2 76.8 38.4L326.4 339.2c6 8.1 15.5 12.8 25.6 12.8l32 0 0-32c0-12.9 7.8-24.6 19.8-29.6s25.7-2.2 34.9 6.9l64 64c6 6 9.4 14.1 9.4 22.6s-3.4 16.6-9.4 22.6l-64 64z"/></svg>
-            </button> <!--Previous-->
+        <div class="flex items-center self-center gap-4">
+            <button (click)="toggleShuffle()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" [ngClass]="{'fill-ac1':shuffle, 'fill-neutral-600':!shuffle}" class="hover:shadow-2xl hover:shadow-neutral-800 fill-neutral-600 hover:fill-ac1 size-5 hover:scale-110 duration-200 transform"><path d="M403.8 34.4c12-5 25.7-2.2 34.9 6.9l64 64c6 6 9.4 14.1 9.4 22.6s-3.4 16.6-9.4 22.6l-64 64c-9.2 9.2-22.9 11.9-34.9 6.9s-19.8-16.6-19.8-29.6l0-32-32 0c-10.1 0-19.6 4.7-25.6 12.8L284 229.3 244 176l31.2-41.6C293.3 110.2 321.8 96 352 96l32 0 0-32c0-12.9 7.8-24.6 19.8-29.6zM164 282.7L204 336l-31.2 41.6C154.7 401.8 126.2 416 96 416l-64 0c-17.7 0-32-14.3-32-32s14.3-32 32-32l64 0c10.1 0 19.6-4.7 25.6-12.8L164 282.7zm274.6 188c-9.2 9.2-22.9 11.9-34.9 6.9s-19.8-16.6-19.8-29.6l0-32-32 0c-30.2 0-58.7-14.2-76.8-38.4L121.6 172.8c-6-8.1-15.5-12.8-25.6-12.8l-64 0c-17.7 0-32-14.3-32-32s14.3-32 32-32l64 0c30.2 0 58.7 14.2 76.8 38.4L326.4 339.2c6 8.1 15.5 12.8 25.6 12.8l32 0 0-32c0-12.9 7.8-24.6 19.8-29.6s25.7-2.2 34.9 6.9l64 64c6 6 9.4 14.1 9.4 22.6s-3.4 16.6-9.4 22.6l-64 64z"/></svg>
+            </button>
             <button (click)="playPrevious()">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" class="hover:shadow-2xl hover:shadow-neutral-800 fill-neutral-600 hover:fill-ac1 size-7 hover:scale-105 duration-200 transform"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M267.5 440.6c9.5 7.9 22.8 9.7 34.1 4.4s18.4-16.6 18.4-29l0-320c0-12.4-7.2-23.7-18.4-29s-24.5-3.6-34.1 4.4l-192 160L64 241 64 96c0-17.7-14.3-32-32-32S0 78.3 0 96L0 416c0 17.7 14.3 32 32 32s32-14.3 32-32l0-145 11.5 9.6 192 160z"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" class="hover:shadow-2xl hover:shadow-neutral-800 fill-neutral-600 hover:fill-ac1 size-7 hover:scale-105 duration-200 transform"><path d="M267.5 440.6c9.5 7.9 22.8 9.7 34.1 4.4s18.4-16.6 18.4-29l0-320c0-12.4-7.2-23.7-18.4-29s-24.5-3.6-34.1 4.4l-192 160L64 241 64 96c0-17.7-14.3-32-32-32S0 78.3 0 96L0 416c0 17.7 14.3 32 32 32s32-14.3 32-32l0-145 11.5 9.6 192 160z"/></svg>
             </button>
-            
-
-            <button (click)="togglePlayPause()"> <!--Play-->
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" class="hover:shadow-2xl hover:shadow-neutral-800 fill-neutral-600 hover:fill-ac1 pl-1.5 size-8 hover:scale-105 duration-200 transform" *ngIf="!this.songManagement.isItPlaying()"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80L0 432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" class="hover:shadow-2xl hover:shadow-neutral-800 fill-neutral-600 hover:fill-ac1 size-8 hover:scale-105 duration-200 transform" *ngIf="this.songManagement.isItPlaying()"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M48 64C21.5 64 0 85.5 0 112L0 400c0 26.5 21.5 48 48 48l32 0c26.5 0 48-21.5 48-48l0-288c0-26.5-21.5-48-48-48L48 64zm192 0c-26.5 0-48 21.5-48 48l0 288c0 26.5 21.5 48 48 48l32 0c26.5 0 48-21.5 48-48l0-288c0-26.5-21.5-48-48-48l-32 0z"/></svg>
+            <button (click)="togglePlayPause()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" class="hover:shadow-2xl hover:shadow-neutral-800 fill-neutral-600 hover:fill-ac1 pl-1.5 size-8 hover:scale-105 duration-200 transform" *ngIf="!this.songManagement.isItPlaying()"><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80L0 432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" class="hover:shadow-2xl hover:shadow-neutral-800 fill-neutral-600 hover:fill-ac1 size-8 hover:scale-105 duration-200 transform" *ngIf="this.songManagement.isItPlaying()"><path d="M48 64C21.5 64 0 85.5 0 112L0 400c0 26.5 21.5 48 48 48l32 0c26.5 0 48-21.5 48-48l0-288c0-26.5-21.5-48-48-48L48 64zm192 0c-26.5 0-48 21.5-48 48l0 288c0 26.5 21.5 48 48 48l32 0c26.5 0 48-21.5 48-48l0-288c0-26.5-21.5-48-48-48l-32 0z"/></svg>
             </button>
-
-            <button (click)="playNext()"> <!--Next-->
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" class="hover:shadow-2xl hover:shadow-neutral-800 fill-neutral-600 hover:fill-ac1 size-7 hover:scale-105 duration-200 transform"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M52.5 440.6c-9.5 7.9-22.8 9.7-34.1 4.4S0 428.4 0 416L0 96C0 83.6 7.2 72.3 18.4 67s24.5-3.6 34.1 4.4l192 160L256 241l0-145c0-17.7 14.3-32 32-32s32 14.3 32 32l0 320c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-145-11.5 9.6-192 160z"/></svg>
+            <button (click)="playNext()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" class="hover:shadow-2xl hover:shadow-neutral-800 fill-neutral-600 hover:fill-ac1 size-7 hover:scale-105 duration-200 transform"><path d="M52.5 440.6c-9.5 7.9-22.8 9.7-34.1 4.4S0 428.4 0 416L0 96C0 83.6 7.2 72.3 18.4 67s24.5-3.6 34.1 4.4l192 160L256 241l0-145c0-17.7 14.3-32 32-32s32 14.3 32 32l0 320c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-145-11.5 9.6-192 160z"/></svg>
             </button>
-            <button (click)="cycleLoop()"> <!--Repeat-->
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" [ngClass]="{'fill-ac1':loopMode =='playlist', 'fill-neutral-600':loopMode !='playlist'}" class="hover:shadow-neutral-800 hover:fill-ac1 size-5 hover:scale-110 duration-200 transform" *ngIf="(loopMode == 'none') || (loopMode == 'playlist')"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M0 224c0 17.7 14.3 32 32 32s32-14.3 32-32c0-53 43-96 96-96l160 0 0 32c0 12.9 7.8 24.6 19.8 29.6s25.7 2.2 34.9-6.9l64-64c12.5-12.5 12.5-32.8 0-45.3l-64-64c-9.2-9.2-22.9-11.9-34.9-6.9S320 19.1 320 32l0 32L160 64C71.6 64 0 135.6 0 224zm512 64c0-17.7-14.3-32-32-32s-32 14.3-32 32c0 53-43 96-96 96l-160 0 0-32c0-12.9-7.8-24.6-19.8-29.6s-25.7-2.2-34.9 6.9l-64 64c-12.5 12.5-12.5 32.8 0 45.3l64 64c9.2 9.2 22.9 11.9 34.9 6.9s19.8-16.6 19.8-29.6l0-32 160 0c88.4 0 160-71.6 160-160z"/></svg>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="hover:shadow-2xl hover:shadow-neutral-800 fill-ac1 hover:fill-ac1 size-5 hover:scale-110 duration-200 transform" *ngIf="loopMode == 'single'"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M142.9 142.9c-17.5 17.5-30.1 38-37.8 59.8c-5.9 16.7-24.2 25.4-40.8 19.5s-25.4-24.2-19.5-40.8C55.6 150.7 73.2 122 97.6 97.6c87.2-87.2 228.3-87.5 315.8-1L455 55c6.9-6.9 17.2-8.9 26.2-5.2s14.8 12.5 14.8 22.2l0 128c0 13.3-10.7 24-24 24l-8.4 0c0 0 0 0 0 0L344 224c-9.7 0-18.5-5.8-22.2-14.8s-1.7-19.3 5.2-26.2l41.1-41.1c-62.6-61.5-163.1-61.2-225.3 1zM16 312c0-13.3 10.7-24 24-24l7.6 0 .7 0L168 288c9.7 0 18.5 5.8 22.2 14.8s1.7 19.3-5.2 26.2l-41.1 41.1c62.6 61.5 163.1 61.2 225.3-1c17.5-17.5 30.1-38 37.8-59.8c5.9-16.7 24.2-25.4 40.8-19.5s25.4 24.2 19.5 40.8c-10.8 30.6-28.4 59.3-52.9 83.8c-87.2 87.2-228.3 87.5-315.8 1L57 457c-6.9 6.9-17.2 8.9-26.2 5.2S16 449.7 16 440l0-119.6 0-.7 0-7.6z"/></svg>
+            <button (click)="cycleLoop()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" [ngClass]="{'fill-ac1':loopMode =='playlist', 'fill-neutral-600':loopMode !='playlist'}" class="hover:shadow-neutral-800 hover:fill-ac1 size-5 hover:scale-110 duration-200 transform" *ngIf="(loopMode == 'none') || (loopMode == 'playlist')"><path d="M0 224c0 17.7 14.3 32 32 32s32-14.3 32-32c0-53 43-96 96-96l160 0 0 32c0 12.9 7.8 24.6 19.8 29.6s25.7 2.2 34.9-6.9l64-64c12.5-12.5 12.5-32.8 0-45.3l-64-64c-9.2-9.2-22.9-11.9-34.9-6.9S320 19.1 320 32l0 32L160 64C71.6 64 0 135.6 0 224zm512 64c0-17.7-14.3-32-32-32s-32 14.3-32 32c0 53-43 96-96 96l-160 0 0-32c0-12.9-7.8-24.6-19.8-29.6s-25.7-2.2-34.9 6.9l-64 64c-12.5 12.5-12.5 32.8 0 45.3l64 64c9.2 9.2 22.9 11.9 34.9 6.9s19.8-16.6 19.8-29.6l0-32 160 0c88.4 0 160-71.6 160-160z"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="hover:shadow-2xl hover:shadow-neutral-800 fill-ac1 hover:fill-ac1 size-5 hover:scale-110 duration-200 transform" *ngIf="loopMode == 'single'"><path d="M142.9 142.9c-17.5 17.5-30.1 38-37.8 59.8c-5.9 16.7-24.2 25.4-40.8 19.5s-25.4-24.2-19.5-40.8C55.6 150.7 73.2 122 97.6 97.6c87.2-87.2 228.3-87.5 315.8-1L455 55c6.9-6.9 17.2-8.9 26.2-5.2s14.8 12.5 14.8 22.2l0 128c0 13.3-10.7 24-24 24l-8.4 0c0 0 0 0 0 0L344 224c-9.7 0-18.5-5.8-22.2-14.8s-1.7-19.3 5.2-26.2l41.1-41.1c-62.6-61.5-163.1-61.2-225.3 1zM16 312c0-13.3 10.7-24 24-24l7.6 0 .7 0L168 288c9.7 0 18.5 5.8 22.2 14.8s1.7 19.3-5.2 26.2l-41.1 41.1c62.6 61.5 163.1 61.2 225.3-1c17.5-17.5 30.1-38 37.8-59.8c5.9-16.7 24.2-25.4 40.8-19.5s25.4 24.2 19.5 40.8c-10.8 30.6-28.4 59.3-52.9 83.8c-87.2 87.2-228.3 87.5-315.8 1L57 457c-6.9 6.9-17.2 8.9-26.2 5.2S16 449.7 16 440l0-119.6 0-.7 0-7.6z"/></svg>
             </button>
-
-
         </div>
-        <div class="flex gap-4"> <!--Barra-->
-            <p class="mt-0.5 text-neutral-500 text-xs">
-                {{ this.songManagement.getSong() ? formatTime(this.songManagement.getSong().currentTime) : '0:00' }}
-              </p>
-            <input type="range" min="0" [max]="this.songManagement.getSong().duration || 100" name="" id="" class="mt-2 w-full appearance-none" [style.--progress]="this.songManagement.getProgress() + '%'" (input)="onInput($event)" [value]="this.songManagement.getSong().currentTime">
-            <p class="mt-0.5 text-neutral-500 text-xs">
-                {{ this.songManagement.getSong() ? formatTime(this.songManagement.getSong().duration) : '0:00' }}
-              </p>
+        <div class="top-1/2 right-0 absolute flex justify-end items-start gap-1 -translate-y-1/2">
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" class="fill-neutral-600 size-5" *ngIf="volume <= 33"><path d="M320 64c0-12.6-7.4-24-18.9-29.2s-25-3.1-34.4 5.3L131.8 160 64 160c-35.3 0-64 28.7-64 64l0 64c0 35.3 28.7 64 64 64l67.8 0L266.7 471.9c9.4 8.4 22.9 10.4 34.4 5.3S320 460.6 320 448l0-384z"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="fill-neutral-600 size-5" *ngIf="(volume > 33) && (volume <= 66)"><path d="M301.1 34.8C312.6 40 320 51.4 320 64l0 384c0 12.6-7.4 24-18.9 29.2s-25 3.1-34.4-5.3L131.8 352 64 352c-35.3 0-64-28.7-64-64l0-64c0-35.3 28.7-64 64-64l67.8 0L266.7 40.1c9.4-8.4 22.9-10.4 34.4-5.3zM412.6 181.5C434.1 199.1 448 225.9 448 256s-13.9 56.9-35.4 74.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C393.1 284.4 400 271 400 256s-6.9-28.4-17.7-37.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5z"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" class="fill-neutral-600 size-5" *ngIf="volume > 66"><path d="M533.6 32.5C598.5 85.2 640 165.8 640 256s-41.5 170.7-106.4 223.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C557.5 398.2 592 331.2 592 256s-34.5-142.2-88.7-186.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM473.1 107c43.2 35.2 70.9 88.9 70.9 149s-27.7 113.8-70.9 149c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C475.3 341.3 496 301.1 496 256s-20.7-85.3-53.2-111.8c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zm-60.5 74.5C434.1 199.1 448 225.9 448 256s-13.9 56.9-35.4 74.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C393.1 284.4 400 271 400 256s-6.9-28.4-17.7-37.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM301.1 34.8C312.6 40 320 51.4 320 64l0 384c0 12.6-7.4 24-18.9 29.2s-25 3.1-34.4-5.3L131.8 352 64 352c-35.3 0-64-28.7-64-64l0-64c0-35.3 28.7-64 64-64l67.8 0L266.7 40.1c9.4-8.4 22.9-10.4 34.4-5.3z"/></svg>
+            </div>
+            <input type="range" min="0" max="100" name="" id="" class="mt-2 w-20 appearance-none" [style.--progress]="volume + '%'" (input)="onVolume($event)">
         </div>
     </div>
-    <div class="justify-self-end self-center">
-        <div class="flex gap-2 mt-12">
-            <div>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" class="fill-neutral-600 size-5" *ngIf="volume <= 33"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M320 64c0-12.6-7.4-24-18.9-29.2s-25-3.1-34.4 5.3L131.8 160 64 160c-35.3 0-64 28.7-64 64l0 64c0 35.3 28.7 64 64 64l67.8 0L266.7 471.9c9.4 8.4 22.9 10.4 34.4 5.3S320 460.6 320 448l0-384z"/></svg>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="fill-neutral-600 size-5" *ngIf="(volume > 33) && (volume <= 66)"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M301.1 34.8C312.6 40 320 51.4 320 64l0 384c0 12.6-7.4 24-18.9 29.2s-25 3.1-34.4-5.3L131.8 352 64 352c-35.3 0-64-28.7-64-64l0-64c0-35.3 28.7-64 64-64l67.8 0L266.7 40.1c9.4-8.4 22.9-10.4 34.4-5.3zM412.6 181.5C434.1 199.1 448 225.9 448 256s-13.9 56.9-35.4 74.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C393.1 284.4 400 271 400 256s-6.9-28.4-17.7-37.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5z"/></svg>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" class="fill-neutral-600 size-5" *ngIf="volume > 66"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d="M533.6 32.5C598.5 85.2 640 165.8 640 256s-41.5 170.7-106.4 223.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C557.5 398.2 592 331.2 592 256s-34.5-142.2-88.7-186.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM473.1 107c43.2 35.2 70.9 88.9 70.9 149s-27.7 113.8-70.9 149c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C475.3 341.3 496 301.1 496 256s-20.7-85.3-53.2-111.8c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zm-60.5 74.5C434.1 199.1 448 225.9 448 256s-13.9 56.9-35.4 74.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C393.1 284.4 400 271 400 256s-6.9-28.4-17.7-37.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM301.1 34.8C312.6 40 320 51.4 320 64l0 384c0 12.6-7.4 24-18.9 29.2s-25 3.1-34.4-5.3L131.8 352 64 352c-35.3 0-64-28.7-64-64l0-64c0-35.3 28.7-64 64-64l67.8 0L266.7 40.1c9.4-8.4 22.9-10.4 34.4-5.3z"/></svg>
-            </div>
-            <input type="range" min="0" max="100" name="" id="" class="mt-2 w-full appearance-none" [style.--progress]="volume + '%'" (input)="onVolume($event)">
-        </div>
-        
+    <div class="flex items-center gap-4 w-full">
+        <p class="text-neutral-500 text-xs">
+            {{ this.songManagement.getSong() ? formatTime(this.songManagement.getSong().currentTime) : '0:00' }}
+          </p>
+        <input type="range" min="0" [max]="this.songManagement.getSong().duration || 100" name="" id="" class="w-full appearance-none" [style.--progress]="this.songManagement.getProgress() + '%'" (input)="onInput($event)" [value]="this.songManagement.getSong().currentTime">
+        <p class="text-neutral-500 text-xs">
+            {{ this.songManagement.getSong() ? formatTime(this.songManagement.getSong().duration) : '0:00' }}
+          </p>
     </div>
 </div>

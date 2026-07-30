@@ -4,6 +4,7 @@ description = "Music folder access."
 commands.allow = [
     "read_file",
     "exists",
+    "get_stream_port",
     "sync_lib",
     "get_all_playlists",
     "get_all_songs",
@@ -18,5 +19,5 @@ commands.allow = [
 ]
 
 [[scope.allow]]
-my-scope = "$HOME/Music/*"
+my-scope = "$AUDIO/*"
 

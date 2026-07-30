@@ -6,7 +6,7 @@
 
 
 input[type="range"] {
-    @apply  rounded-full w-full h-1 appearance-none;
+    @apply  rounded-full w-full h-1.5 appearance-none;
     accent-color: --color-ac1;
     background: linear-gradient(
         to right,
@@ -38,4 +38,15 @@ input[type="range"]::-moz-range-thumb {
     height: 16px;
     cursor: pointer;
     transition: opacity 0.2s;
+}
+
+.marquee-inner {
+    display: inline-block;
+    white-space: nowrap;
+    animation: marquee 20s linear infinite;
+}
+
+@keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
 }

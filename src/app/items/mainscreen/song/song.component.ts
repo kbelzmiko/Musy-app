@@ -1,10 +1,9 @@
 import { Component, HostListener, Input } from '@angular/core';
-import { readFile } from '@tauri-apps/plugin-fs';
 import { CommonModule } from '@angular/common';
 import { SongAddingService } from '../../../services/song-adding.service';
 import { PlaylistComponent } from "../playlist-button/playlist/playlist.component";
 import { appDataDir } from '@tauri-apps/api/path';
-import { invoke } from '@tauri-apps/api/core';
+import { invoke, convertFileSrc } from '@tauri-apps/api/core';
 import { MainScreenStatusService } from '../../../services/main-screen-status.service';
 import { SongManagementService } from '../../../services/song-management.service';
 
@@ -42,18 +41,7 @@ export class SongComponent {
 
   async getCoverPath(): Promise<string> {
     if (!this.coverPath) return 'assets/black.jpg';
-    console.log("Hola")
-
-    const fileData = await readFile(this.coverPath);
-    
-    const blob = new Blob([fileData], { type: 'image/jpeg' });
-
-    if (this.coverUrl) {
-      URL.revokeObjectURL(this.coverUrl);
-    }
-
-    return URL.createObjectURL(blob);
-
+    return convertFileSrc(this.coverPath);
   }
   //this.path,this.title,this.artist,this.coverUrl
   playSong() {

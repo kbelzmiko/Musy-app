@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SongManagementService } from '../../services/song-management.service';
 
@@ -14,10 +14,32 @@ export class PlaybarComponent {
 
   constructor(public songManagement:SongManagementService) {}
 
-  volume:number = 0
+  volume:number = 50
 
   loopMode:string = "none"
   shuffle:boolean = false
+
+  @ViewChild('titleStatic') titleStatic!: ElementRef;
+  overflows = false;
+  private lastTitle = '';
+
+  ngDoCheck() {
+    const currentTitle = this.songManagement.songTitle;
+    if (currentTitle !== this.lastTitle) {
+      this.lastTitle = currentTitle;
+      this.overflows = false;
+    }
+  }
+
+  ngAfterViewChecked() {
+    const el = this.titleStatic?.nativeElement;
+    if (el) {
+      const newVal = el.scrollWidth > el.clientWidth;
+      if (newVal !== this.overflows) {
+        this.overflows = newVal;
+      }
+    }
+  }
 
   async togglePlayPause() {
     this.songManagement.togglePlayPause();

@@ -8,6 +8,7 @@ use logic::remove_starred;
 use tauri_plugin_fs::FsExt;
 
 mod logic;
+mod streamer;
 use logic::Playlist;
 use logic::Song;
 
@@ -75,15 +76,22 @@ async fn remove_is_starred(song_id:String, db_path:String) {
     let _ = remove_starred(song_id, db_path);
 }
 
+#[tauri::command]
+fn get_stream_port() -> u16 {
+    streamer::get_port()
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+    std::env::set_var("WEBKIT_DISABLE_DMABUF_RENDERER", "1");
+    streamer::start();
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_fs::init())
         .setup(|app| {
             let scope = app.fs_scope();
-            if let Err(e) = scope.allow_directory("$HOME/Music", true) {
+            if let Err(e) = scope.allow_directory("$AUDIO", true) {
                 eprintln!("Failed access: {}", e)
             }
             if let Err(e) = scope.allow_directory("$APPDATA", true) {
@@ -101,7 +109,7 @@ pub fn run() {
             
             Ok(())
          })
-        .invoke_handler(tauri::generate_handler![sync_lib, get_all_playlists, get_all_songs, get_playlist_songs, get_all_starred,create_playlist, remove_playlist, add_song_to_playlist, remove_song_from_playlist, add_is_starred, remove_is_starred])
+        .invoke_handler(tauri::generate_handler![sync_lib, get_all_playlists, get_all_songs, get_playlist_songs, get_all_starred,create_playlist, remove_playlist, add_song_to_playlist, remove_song_from_playlist, add_is_starred, remove_is_starred, get_stream_port])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

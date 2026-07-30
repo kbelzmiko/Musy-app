@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
-import { readFile } from '@tauri-apps/plugin-fs';
-import { audioDir } from '@tauri-apps/api/path';
-import { invoke } from '@tauri-apps/api/core';
+import { invoke, convertFileSrc } from '@tauri-apps/api/core';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +9,19 @@ export class SongManagementService {
   songTitle:string = ""
   songArtist:string = ""
 
-  constructor() { this.setupSongListeners() }
+  streamPort: Promise<number> | null = null;
+
+  private async getStreamPort(): Promise<number> {
+    if (!this.streamPort) {
+      this.streamPort = invoke<number>('get_stream_port');
+    }
+    return this.streamPort;
+  }
+
+  constructor() {
+    this.song.volume = 0.5;
+    this.setupSongListeners();
+  }
 
   song: HTMLAudioElement = new Audio();
   
@@ -25,7 +35,7 @@ export class SongManagementService {
     return this.progress;
   }
 
-  volume:number = 0;
+  volume:number = 50;
 
   isPlaying:boolean = false;
 
@@ -71,20 +81,8 @@ export class SongManagementService {
   }
 
   async getCoverPath(coverPath:string): Promise<string> {
-    let coverUrl: string = 'assets/black.jpg';
-    if (!coverPath) return coverUrl;
-    console.log("Hola")
-
-    const fileData = await readFile(coverPath);
-    
-    const blob = new Blob([fileData], { type: 'image/jpeg' });
-
-    if (coverUrl) {
-      URL.revokeObjectURL(coverUrl);
-    }
-
-    return URL.createObjectURL(blob);
-
+    if (!coverPath) return 'assets/black.jpg';
+    return convertFileSrc(coverPath);
   }
 
   async loadAndPlay(_path:string, _index:number) {
@@ -95,10 +93,8 @@ export class SongManagementService {
       this.songCover = await this.getCoverPath(this.queue[_index].coverPath);
 
       const path = _path;
-      
-      const fileData = await readFile(path);
-      const blob = new Blob([fileData], { type: 'audio/mp3' });
-      const audioUrl = URL.createObjectURL(blob);
+      const port = await this.getStreamPort();
+      const audioUrl = `http://127.0.0.1:${port}/stream?path=${encodeURIComponent(path)}`;
       
       this.song.src = audioUrl;
       await this.song.play();

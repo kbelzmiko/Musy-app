@@ -18,7 +18,7 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 tauri-build = { version = "2", features = [] }
 
 [dependencies]
-tauri = { version = "2", features = [] }
+tauri = { version = "2", features = ["protocol-asset"] }
 tauri-plugin-opener = "2"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
@@ -29,3 +29,5 @@ lofty = "0.22.3"
 rusqlite = { version = "0.34.0", features = ["bundled"] }
 blake3 = "1.8.1"
 tauri-plugin-dialog = "2"
+tiny_http = "0.12"
+urlencoding = "2"
