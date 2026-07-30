@@ -28,21 +28,18 @@ export class SongComponent {
   @Input() album!: string;
   @Input() year!: string;
   @Input() duration!: string;
-  @Input() coverPath!: string;
   @Input() isStarred!: boolean;
 
   @Input() playlistId!: number;
 
+  _coverPath!: string;
+  @Input() set coverPath(value: string) {
+    this._coverPath = value;
+    this.coverUrl = value ? convertFileSrc(value) : 'assets/black.jpg';
+  }
+  get coverPath(): string { return this._coverPath; }
+
   coverUrl: string = 'assets/black.jpg';
-
-  async ngOnInit() {
-    this.coverUrl = await this.getCoverPath();
-  }
-
-  async getCoverPath(): Promise<string> {
-    if (!this.coverPath) return 'assets/black.jpg';
-    return convertFileSrc(this.coverPath);
-  }
   //this.path,this.title,this.artist,this.coverUrl
   playSong() {
     let song:Song = {id: this.id, path: this.path, title:this.title, artist: this.artist, album: this.album, year: this.year, duration: this.duration, coverPath: this.coverPath, isStarred: this.isStarred };
