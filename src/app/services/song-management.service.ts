@@ -55,6 +55,8 @@ export class SongManagementService {
         this.progress = (this.song.currentTime / this.song.duration) * 100;
       }
     });
+    this.song?.addEventListener('play', () => { this.isPlaying = true; });
+    this.song?.addEventListener('pause', () => { this.isPlaying = false; });
   }
 
 
@@ -112,7 +114,6 @@ export class SongManagementService {
     } else {
       this.song.pause()
     }
-    this.isPlaying = !this.isPlaying;
   }
 
   playNext() {

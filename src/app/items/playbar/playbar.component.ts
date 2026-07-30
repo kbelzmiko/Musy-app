@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SongManagementService } from '../../services/song-management.service';
 
@@ -12,7 +12,15 @@ import { SongManagementService } from '../../services/song-management.service';
 })
 export class PlaybarComponent {
 
-  constructor(public songManagement:SongManagementService) {}
+  constructor(public songManagement:SongManagementService, private cd: ChangeDetectorRef) {}
+
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboard(event: KeyboardEvent) {
+    if (event.code === 'Space' && !(event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement || (event.target as HTMLElement).isContentEditable)) {
+      event.preventDefault();
+      this.songManagement.togglePlayPause();
+    }
+  }
 
   volume:number = 50
 
@@ -22,12 +30,19 @@ export class PlaybarComponent {
   @ViewChild('titleStatic') titleStatic!: ElementRef;
   overflows = false;
   private lastTitle = '';
+  private lastIsPlaying = false;
 
   ngDoCheck() {
     const currentTitle = this.songManagement.songTitle;
     if (currentTitle !== this.lastTitle) {
       this.lastTitle = currentTitle;
       this.overflows = false;
+      this.cd.markForCheck();
+    }
+    const currentIsPlaying = this.songManagement.isPlaying;
+    if (currentIsPlaying !== this.lastIsPlaying) {
+      this.lastIsPlaying = currentIsPlaying;
+      this.cd.markForCheck();
     }
   }
 
