@@ -1,23 +1,22 @@
 import { Component, HostListener, Input, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SongAddingService } from '../../../services/song-adding.service';
-import { PlaylistComponent } from "../playlist-button/playlist/playlist.component";
 import { appDataDir } from '@tauri-apps/api/path';
 import { invoke, convertFileSrc } from '@tauri-apps/api/core';
 import { MainScreenStatusService } from '../../../services/main-screen-status.service';
 import { SongManagementService } from '../../../services/song-management.service';
+import { readFile } from '@tauri-apps/plugin-fs';
 
 @Component({
   selector: 'app-song',
   standalone: true,
-  imports: [CommonModule, PlaylistComponent],
+  imports: [CommonModule],
   templateUrl: './song.component.html',
   styleUrl: '../../../../styles.css'
 })
 export class SongComponent implements OnInit, OnDestroy {
-  isModalOpen: boolean = false;
-
   private contextMenuEl: HTMLElement | null = null;
+  private modalEl: HTMLElement | null = null;
 
   private _contextMenuHandler = () => { this.removeContextMenu(); };
 
@@ -30,6 +29,7 @@ export class SongComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     document.removeEventListener('contextmenu', this._contextMenuHandler, {capture: true});
     this.removeContextMenu();
+    this.removeModal();
   }
 
   @Input() id!: string;
@@ -61,10 +61,11 @@ export class SongComponent implements OnInit, OnDestroy {
     this.songManagement.addOneSong(song);
   }
 
-  addSongToPlaylist() {
+  async addSongToPlaylist() {
     this.removeContextMenu();
-    this.songAdding.getAllPlaylists();
-    this.isModalOpen = true;
+    await this.songAdding.getAllPlaylists();
+    this.showModal();
+    document.body.style.overflow = 'hidden';
   }
 
   async removeSongFromPlaylist() {
@@ -74,16 +75,99 @@ export class SongComponent implements OnInit, OnDestroy {
     this.mainScreenStatus.refresh();
   }
 
-  close() {
-    this.isModalOpen = false;
-    this.songAdding.letGo();
-  }
-
   private removeContextMenu() {
     if (this.contextMenuEl) {
       this.contextMenuEl.remove();
       this.contextMenuEl = null;
     }
+  }
+
+  private removeModal() {
+    if (this.modalEl) {
+      this.modalEl.remove();
+      this.modalEl = null;
+    }
+  }
+
+  private async showModal() {
+    this.removeModal();
+
+    const backdrop = document.createElement('div');
+    backdrop.style.cssText = 'position:fixed;z-index:60;inset:0;display:flex;justify-content:center;align-items:center;background:rgba(0,0,0,0.6)';
+    backdrop.addEventListener('click', () => this.closeModal());
+
+    const card = document.createElement('div');
+    card.style.cssText = 'display:flex;flex-direction:column;gap:8px;background:#171717;padding:8px;border:2px solid #262626;border-radius:16px;height:320px';
+    card.addEventListener('click', (e) => e.stopPropagation());
+
+    const title = document.createElement('h1');
+    title.style.cssText = 'font-size:24px;line-height:32px;margin:0;color:#fff';
+    title.textContent = 'Add to Playlist';
+    card.appendChild(title);
+
+    const list = document.createElement('div');
+    list.style.cssText = 'display:flex;flex-direction:column;gap:8px;background:rgba(82,82,82,0.2);padding:8px;border:2px solid #262626;border-radius:16px;overflow-y:auto;flex:1;min-height:0';
+
+    for (const playlist of this.songAdding.playlists) {
+      if (playlist.id == 0) continue;
+
+      const item = document.createElement('button');
+      item.style.cssText = 'display:flex;gap:12px;align-items:center;background:transparent;color:#fff;padding:8px;border:none;border-radius:16px;width:100%;cursor:pointer;text-align:left';
+
+      const img = document.createElement('img');
+      img.style.cssText = 'width:56px;height:56px;border-radius:12px;object-fit:cover';
+      img.src = 'assets/black.jpg';
+      if (playlist.cover_path) {
+        readFile(playlist.cover_path).then(data => {
+          const blob = new Blob([data], { type: 'image/jpeg' });
+          img.src = URL.createObjectURL(blob);
+        }).catch(() => {});
+      }
+
+      const nameEl = document.createElement('h1');
+      nameEl.style.cssText = 'font-size:20px;line-height:28px;margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:128px';
+      nameEl.textContent = playlist.name;
+
+      item.appendChild(img);
+      const textDiv = document.createElement('div');
+      textDiv.style.cssText = 'display:grid;grid-template-columns:1fr;text-align:left';
+      textDiv.appendChild(nameEl);
+      item.appendChild(textDiv);
+
+      item.addEventListener('mouseenter', () => { item.style.background = 'rgba(201,2,88,0.25)'; item.style.boxShadow = '0 4px 6px -1px rgba(0,0,0,0.5)'; });
+      item.addEventListener('mouseleave', () => { item.style.background = 'transparent'; item.style.boxShadow = 'none'; });
+      item.addEventListener('click', async () => {
+        const data_dir = await appDataDir();
+        invoke('add_song_to_playlist', {playlist_id: playlist.id, song_id: this.id, db_path: data_dir});
+        console.log("Canción añadida: " + this.id + " en: " + playlist.name);
+        this.mainScreenStatus.refresh();
+        this.closeModal();
+      });
+
+      list.appendChild(item);
+    }
+    card.appendChild(list);
+
+    const closeBtnDiv = document.createElement('div');
+    closeBtnDiv.style.cssText = 'display:flex;gap:16px;margin-top:auto';
+    const closeBtn = document.createElement('button');
+    closeBtn.style.cssText = 'background:rgba(82,82,82,0.2);color:#fff;padding:8px;border:2px solid #262626;border-radius:16px;width:100%;cursor:pointer';
+    closeBtn.textContent = 'Close';
+    closeBtn.addEventListener('mouseenter', () => { closeBtn.style.background = 'rgba(201,2,88,0.25)'; closeBtn.style.borderColor = 'rgba(201,2,88,0.25)'; });
+    closeBtn.addEventListener('mouseleave', () => { closeBtn.style.background = 'rgba(82,82,82,0.2)'; closeBtn.style.borderColor = '#262626'; });
+    closeBtn.addEventListener('click', () => this.closeModal());
+    closeBtnDiv.appendChild(closeBtn);
+    card.appendChild(closeBtnDiv);
+
+    backdrop.appendChild(card);
+    document.body.appendChild(backdrop);
+    this.modalEl = backdrop;
+  }
+
+  closeModal() {
+    this.removeModal();
+    this.songAdding.letGo();
+    document.body.style.overflow = '';
   }
 
   onRightClick(event: MouseEvent) {

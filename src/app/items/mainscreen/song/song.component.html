@@ -17,15 +17,3 @@
         </div>
     </div>
 </div>
-
-<div *ngIf="this.isModalOpen" class="z-60 fixed inset-0 flex justify-center items-center bg-black/60 transition-opacity duration-300">
-    <div class="flex flex-col gap-2 bg-neutral-900 p-2 border-2 border-neutral-800 rounded-2xl h-80">
-        <h1 class="text-2xl">Add to Playlist</h1>
-        <div class="flex flex-col gap-2 bg-neutral-600/20 p-2 border-2 border-neutral-800 rounded-2xl h-full overflow-y-scroll scroll-smooth">
-            <app-playlist *ngFor="let playlist of this.songAdding.playlists" [playlistId]="playlist.id" playlistName={{playlist.name}} playlistCoverPath={{playlist.cover_path}} [songId]="this.id" (click)="close()"></app-playlist>
-        </div>
-        <div class="flex gap-4 mt-auto">
-            <button (click)="close()" class="bg-neutral-600/20 hover:bg-ac1/40 hover:shadow-lg hover:shadow-neutral-800 fill-neutral-600 hover:fill-ac1 p-2 border-2 border-neutral-800 hover:border-ac1/40 rounded-2xl w-full h-fit hover:scale-105 duration-200 transform">Close</button>
-        </div>
-    </div>
-</div>

@@ -65,6 +65,7 @@ export class HomeitemComponent implements OnInit, OnDestroy {
     this.removeContextMenu();
     this.songAdding.getAllPlaylists();
     this.isModalOpen = true;
+    document.body.style.overflow = 'hidden';
   }
 
   async removeSongFromPlaylist() {
@@ -77,6 +78,7 @@ export class HomeitemComponent implements OnInit, OnDestroy {
   close() {
     this.isModalOpen = false;
     this.songAdding.letGo();
+    document.body.style.overflow = '';
   }
 
   private removeContextMenu() {
